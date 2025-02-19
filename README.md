@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="icon.png">
+  <img src="https://raw.githubusercontent.com/mostlynick3/azerothcore-lua-demon-morpher/master/icon.png">
 </div>
 
 ## AzerothCore Lua Demon Morpher Module
