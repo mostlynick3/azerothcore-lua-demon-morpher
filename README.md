@@ -32,8 +32,13 @@ Example vendor, created by script:
 
 ![image](https://github.com/user-attachments/assets/f44f0865-d075-4676-83fd-663c598edaf5)
 
+________________________________________
 Name: AzerothCore Lua Demon Morpher
+
 Author: mostlynick3
+
 Repository: https://github.com/mostlynick3/azerothcore-lua-demon-morpher/
+
 Download: https://github.com/mostlynick3/azerothcore-lua-demon-morpher/archive/refs/heads/main.zip
+
 License: AGPL-3.0 license
