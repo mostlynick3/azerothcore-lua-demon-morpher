@@ -1,6 +1,8 @@
-![image](https://github.com/user-attachments/assets/6e757ddd-887c-4d73-af5e-89ca258b580c)
+<div align="center">
+  <img src="icon.png">
+</div>
 
-## Azerothcore Lua Demon Morpher Module
+## AzerothCore Lua Demon Morpher Module
 
 This module lets Warlocks kill demons and claim their models to apply on their own summoned demons.
 
@@ -29,3 +31,9 @@ Example item, created by script:
 Example vendor, created by script:
 
 ![image](https://github.com/user-attachments/assets/f44f0865-d075-4676-83fd-663c598edaf5)
+
+Name: AzerothCore Lua Demon Morpher
+Author: mostlynick3
+Repository: https://github.com/mostlynick3/azerothcore-lua-demon-morpher/
+Download: https://github.com/mostlynick3/azerothcore-lua-demon-morpher/archive/refs/heads/main.zip
+License: AGPL-3.0 license
