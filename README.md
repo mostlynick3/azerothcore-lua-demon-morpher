@@ -8,7 +8,7 @@ This module lets Warlocks kill demons and claim their models to apply on their o
 
 Make your Felguard a Wrathguard, your Felhunter a Hellboar, and much, much more!
 
-This module requires an item ID to open the morph menu. The Lua script will create the required character database table, item, and vendor for you, if you variables to do so are set to true. This means that for the inserts to be processed.
+This module requires an item ID to open the morph menu. The Lua script will create the required character database table, item, and vendor for you, if the variables to do so are set to true.
 
 This isn't a finished product, it is missing some performance optimizations but works perfectly fine out of the box. 
 
