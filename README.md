@@ -10,6 +10,8 @@ This module requires an item ID to open the morph menu. The Lua script will crea
 
 This isn't a finished product, it is missing some performance optimizations but works perfectly fine out of the box. 
 
-Example item, created by script: ![image](https://github.com/user-attachments/assets/61c02426-9f1e-44dd-859b-31fa2ea288b4)
+Example item, created by script:
+![image](https://github.com/user-attachments/assets/61c02426-9f1e-44dd-859b-31fa2ea288b4)
 
-Morph selection menu: ![image](https://github.com/user-attachments/assets/73768023-368b-4049-a9ae-5343346f6dac)
+Morph selection menu:
+![image](https://github.com/user-attachments/assets/73768023-368b-4049-a9ae-5343346f6dac)
