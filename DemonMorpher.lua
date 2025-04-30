@@ -320,14 +320,17 @@ local function OnItemGossipSelect(event, player, object, sender, intid, code)
         OnPlayerGossipHello(player, object)
         return
     end
-	if intid == 997 then
-		player:GossipClearMenu()
-		player:GossipMenuAddItem(0, "Through channeling the spirits of the underworld, you may allow your demon to take on the forms of its enemies.\n \nTo claim an enemy's form, you must slay it.\n \nEvery unique form claimed increases your morphing skill by 1.\n \nTo claim the form of elite or rare creatures, you need to have a morphing skill of at least "..MorphReqEliteandRare..".\n ", 0, 997)
-		player:GossipMenuAddItem(4, "Go back", 0, 999)
-		player:GossipSendMenu(1, player, 99)
-	end
+    
+    if intid == 997 then
+        player:GossipClearMenu()
+        player:GossipMenuAddItem(0, "Through channeling the spirits of the underworld, you may allow your demon to take on the forms of its enemies.\n \nTo claim an enemy's form, you must slay it.\n \nEvery unique form claimed increases your morphing skill by 1.\n \nTo claim the form of elite or rare creatures, you need to have a morphing skill of at least "..MorphReqEliteandRare..".\n ", 0, 997)
+        player:GossipMenuAddItem(4, "Go back", 0, 999)
+        player:GossipSendMenu(1, player, 99)
+        return
+    end
+    
     if intid == 998 then
-		local guid = player:GetGUIDLow()
+        local guid = player:GetGUIDLow()
         local petGUID = player:GetPetGUID()
         if petGUID then
             local nearbyUnits = player:GetCreaturesInRange(100)
@@ -341,163 +344,205 @@ local function OnItemGossipSelect(event, player, object, sender, intid, code)
             if pet then
                 pet:DeMorph()
                 CharDBExecute("UPDATE character_morphs SET active = 0 WHERE guid = " .. player:GetGUIDLow() .. " AND form = " .. pet:GetCreatureFamily())
-				if pet:GetCreatureFamily() == 15 then
-					morph15[guid] = nil
-				elseif pet:GetCreatureFamily() == 16 then
-					morph16[guid] = nil
-				elseif pet:GetCreatureFamily() == 17 then
-					morph17[guid] = nil
-				elseif pet:GetCreatureFamily() == 19 then
-					morph19[guid] = nil
-				elseif pet:GetCreatureFamily() == 23 then
-					morph23[guid] = nil
-				elseif pet:GetCreatureFamily() == 29 then
-					morph29[guid] = nil
-				elseif pet:GetCreatureFamily() == 30 then
-					morph30[guid] = nil
-				end
+                if pet:GetCreatureFamily() == 15 then
+                    morph15[guid] = nil
+                elseif pet:GetCreatureFamily() == 16 then
+                    morph16[guid] = nil
+                elseif pet:GetCreatureFamily() == 17 then
+                    morph17[guid] = nil
+                elseif pet:GetCreatureFamily() == 19 then
+                    morph19[guid] = nil
+                elseif pet:GetCreatureFamily() == 23 then
+                    morph23[guid] = nil
+                elseif pet:GetCreatureFamily() == 29 then
+                    morph29[guid] = nil
+                elseif pet:GetCreatureFamily() == 30 then
+                    morph30[guid] = nil
+                end
             else
                 player:SendBroadcastMessage("Your demon is too far away!")
-				OnPlayerGossipHello(player, player)
             end
         else
             player:SendBroadcastMessage("No demon pet found.")
-			OnPlayerGossipHello(player, player)
         end
         OnPlayerGossipHello(player, player)
         return
     end
-	if intid > 997 or intid < 997 then
-		if familyNames[intid] then
-			local guid = player:GetGUIDLow()
-			local playername = player:GetName()
-			CharDBQueryAsync("SELECT name, id FROM character_morphs WHERE guid = "..guid.." AND form = "..intid, function(results)
-			chosenFamily = intid
-			player = GetPlayerByName(playername)
-			
-				if results then
-					player:GossipClearMenu()
-					
-					local nameCounts = {}
-
-					repeat
-						local name = results:GetString(0)
-						local displayId = results:GetUInt32(1)
-						
-						-- Increment the count for this name
-						nameCounts[name] = (nameCounts[name] or 0) + 1
-						local displayName = name
-						
-						-- Append count if there are duplicates
-						if nameCounts[name] > 1 then
-							displayName = name .. " " .. nameCounts[name] .. ""
-						end
-						
-						player:GossipMenuAddItem(0, displayName, 0, displayId)
-					until not results:NextRow()
-					
-					player:GossipMenuAddItem(4, "Go back", 0, 999)
-					player:GossipSendMenu(1, player, 99)  -- Use the same gossip event ID for the submenu
-				else
-					player:SendAreaTriggerMessage("You don't have any morphs for this demon!")
-					OnPlayerGossipHello(player, player)
-				end
-			end)
-		else
-			-- This is the submenu, intid is the display ID
-			local guid = player:GetGUIDLow()
-			local name = player:GetName()
-			
-			playerMorphChoice[player:GetGUIDLow()] = intid
-			local petGUID = player:GetPetGUID()
-			if petGUID then
-				local nearbyUnits = player:GetCreaturesInRange(100)
-				local pet = nil
-				for _, unit in ipairs(nearbyUnits) do
-					if unit:GetGUID() == petGUID then
-						pet = unit
-						break
-					end
-				end
-				if pet then
-					summonedPetFamily = pet:GetCreatureFamily()
-					if summonedPetFamily == chosenFamily then
-						pet:SetDisplayId(intid)
-					end
-				end
-			end
-			
-			CharDBQueryAsync("SELECT name FROM character_morphs WHERE guid = " .. guid .. " AND form = " .. chosenFamily .. " AND id = " .. intid, function(morphNameResult)
-				local player = GetPlayerByName(name)
-				local morphName = "Unknown Morph"
-				if morphNameResult then
-					morphName = morphNameResult:GetString(0)
-				end
-				player:SendBroadcastMessage("You have morphed your "..familyNames[chosenFamily].." into "..morphName..".")
-			end)
-			
-			CharDBExecute("UPDATE character_morphs SET active = (form = " .. chosenFamily .. " AND id = " .. intid .. ") WHERE guid = " .. guid .. " AND form = " .. chosenFamily)
-			
-			if chosenFamily == 15 then
-				morph15[guid] = intid
-				morph16[guid] = nil
-				morph17[guid] = nil
-				morph19[guid] = nil
-				morph23[guid] = nil
-				morph29[guid] = nil
-				morph30[guid] = nil
-			elseif chosenFamily == 16 then
-				morph15[guid] = nil
-				morph16[guid] = intid
-				morph17[guid] = nil
-				morph19[guid] = nil
-				morph23[guid] = nil
-				morph29[guid] = nil
-				morph30[guid] = nil
-			elseif chosenFamily == 17 then
-				morph15[guid] = nil
-				morph16[guid] = nil
-				morph17[guid] = intid
-				morph19[guid] = nil
-				morph23[guid] = nil
-				morph29[guid] = nil
-				morph30[guid] = nil
-			elseif chosenFamily == 19 then
-				morph15[guid] = nil
-				morph16[guid] = nil
-				morph17[guid] = nil
-				morph19[guid] = intid
-				morph23[guid] = nil
-				morph29[guid] = nil
-				morph30[guid] = nil
-			elseif chosenFamily == 23 then
-				morph15[guid] = nil
-				morph16[guid] = nil
-				morph17[guid] = nil
-				morph19[guid] = nil
-				morph23[guid] = intid
-				morph29[guid] = nil
-				morph30[guid] = nil
-			elseif chosenFamily == 29 then
-				morph15[guid] = nil
-				morph16[guid] = nil
-				morph17[guid] = nil
-				morph19[guid] = nil
-				morph23[guid] = nil
-				morph29[guid] = intid
-				morph30[guid] = nil
-			elseif chosenFamily == 30 then
-				morph15[guid] = nil
-				morph16[guid] = nil
-				morph17[guid] = nil
-				morph19[guid] = nil
-				morph23[guid] = nil
-				morph29[guid] = nil
-				morph30[guid] = intid
-			end
-			OnPlayerGossipHello(player, player)
-		end
-	end
+    
+    -- Function to show specific page of morphs
+    local function ShowMorphsPage(player, formId, page)
+        local guid = player:GetGUIDLow()
+        local playername = player:GetName()
+        local ITEMS_PER_PAGE = 10
+        
+        CharDBQueryAsync("SELECT name, id FROM character_morphs WHERE guid = "..guid.." AND form = "..formId, function(results)
+            player = GetPlayerByName(playername)
+            
+            if results then
+                -- Store all results in a table for pagination
+                local morphList = {}
+                repeat
+                    table.insert(morphList, {
+                        name = results:GetString(0),
+                        displayId = results:GetUInt32(1)
+                    })
+                until not results:NextRow()
+                
+                -- Sort alphabetically by name
+                table.sort(morphList, function(a, b)
+                    return a.name < b.name
+                end)
+                
+                player:GossipClearMenu()
+                
+                local startIndex = (page - 1) * ITEMS_PER_PAGE + 1
+                local endIndex = math.min(startIndex + ITEMS_PER_PAGE - 1, #morphList)
+                
+                local nameCounts = {}
+                
+                for i = startIndex, endIndex do
+                    local morph = morphList[i]
+                    local name = morph.name
+                    local displayId = morph.displayId
+                    
+                    -- Increment the count for this name
+                    nameCounts[name] = (nameCounts[name] or 0) + 1
+                    local displayName = name
+                    
+                    -- Append count if there are duplicates
+                    if nameCounts[name] > 1 then
+                        displayName = name .. " " .. nameCounts[name]
+                    end
+                    
+                    -- Use regular display ID for morph selection
+                    player:GossipMenuAddItem(0, displayName, 0, displayId)
+                end
+                
+                -- Add pagination controls with special ID format (900000+ instead of 90000+)
+                if page > 1 then
+                    player:GossipMenuAddItem(4, "Previous Page", 0, 900000 + (formId * 1000) + (page - 1))
+                end
+                
+                if endIndex < #morphList then
+                    player:GossipMenuAddItem(4, "Next Page", 0, 900000 + (formId * 1000) + (page + 1))
+                end
+                
+                player:GossipMenuAddItem(4, "Go back", 0, 999)
+                player:GossipSendMenu(1, player, 99)
+            else
+                player:SendAreaTriggerMessage("You don't have any morphs for this demon!")
+                OnPlayerGossipHello(player, player)
+            end
+        end)
+    end
+    
+    -- Check if this is a pagination request (using 900000+ range)
+    if intid >= 900000 then
+        local formId = math.floor((intid - 900000) / 1000)
+        local page = intid - 900000 - (formId * 1000)
+        ShowMorphsPage(player, formId, page)
+        return
+    end
+    
+    -- Handle demon family selection (15-30)
+    if familyNames[intid] then
+        chosenFamily = intid
+        ShowMorphsPage(player, intid, 1)
+        return
+    end
+    
+    -- This is morph selection (display ID)
+    local guid = player:GetGUIDLow()
+    local name = player:GetName()
+    
+    playerMorphChoice[player:GetGUIDLow()] = intid
+    local petGUID = player:GetPetGUID()
+    if petGUID then
+        local nearbyUnits = player:GetCreaturesInRange(100)
+        local pet = nil
+        for _, unit in ipairs(nearbyUnits) do
+            if unit:GetGUID() == petGUID then
+                pet = unit
+                break
+            end
+        end
+        if pet then
+            summonedPetFamily = pet:GetCreatureFamily()
+            if summonedPetFamily == chosenFamily then
+                pet:SetDisplayId(intid)
+            end
+        end
+    end
+    
+    CharDBQueryAsync("SELECT name FROM character_morphs WHERE guid = " .. guid .. " AND form = " .. chosenFamily .. " AND id = " .. intid, function(morphNameResult)
+        local player = GetPlayerByName(name)
+        local morphName = "Unknown Morph"
+        if morphNameResult then
+            morphName = morphNameResult:GetString(0)
+        end
+        player:SendBroadcastMessage("You have morphed your "..familyNames[chosenFamily].." into "..morphName..".")
+    end)
+    
+    CharDBExecute("UPDATE character_morphs SET active = (form = " .. chosenFamily .. " AND id = " .. intid .. ") WHERE guid = " .. guid .. " AND form = " .. chosenFamily)
+    
+    if chosenFamily == 15 then
+        morph15[guid] = intid
+        morph16[guid] = nil
+        morph17[guid] = nil
+        morph19[guid] = nil
+        morph23[guid] = nil
+        morph29[guid] = nil
+        morph30[guid] = nil
+    elseif chosenFamily == 16 then
+        morph15[guid] = nil
+        morph16[guid] = intid
+        morph17[guid] = nil
+        morph19[guid] = nil
+        morph23[guid] = nil
+        morph29[guid] = nil
+        morph30[guid] = nil
+    elseif chosenFamily == 17 then
+        morph15[guid] = nil
+        morph16[guid] = nil
+        morph17[guid] = intid
+        morph19[guid] = nil
+        morph23[guid] = nil
+        morph29[guid] = nil
+        morph30[guid] = nil
+    elseif chosenFamily == 19 then
+        morph15[guid] = nil
+        morph16[guid] = nil
+        morph17[guid] = nil
+        morph19[guid] = intid
+        morph23[guid] = nil
+        morph29[guid] = nil
+        morph30[guid] = nil
+    elseif chosenFamily == 23 then
+        morph15[guid] = nil
+        morph16[guid] = nil
+        morph17[guid] = nil
+        morph19[guid] = nil
+        morph23[guid] = intid
+        morph29[guid] = nil
+        morph30[guid] = nil
+    elseif chosenFamily == 29 then
+        morph15[guid] = nil
+        morph16[guid] = nil
+        morph17[guid] = nil
+        morph19[guid] = nil
+        morph23[guid] = nil
+        morph29[guid] = intid
+        morph30[guid] = nil
+    elseif chosenFamily == 30 then
+        morph15[guid] = nil
+        morph16[guid] = nil
+        morph17[guid] = nil
+        morph19[guid] = nil
+        morph23[guid] = nil
+        morph29[guid] = nil
+        morph30[guid] = intid
+    end
+    OnPlayerGossipHello(player, player)
 end
 
 local function OnPetAddedToWorld(event, player, pet)
