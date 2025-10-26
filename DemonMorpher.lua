@@ -255,7 +255,7 @@ local function OnKillCreature(event, player, creature)
 			end
 		end
 		
-        CharDBExecute("INSERT INTO character_morphs (guid, name, id, form, active) VALUES (" .. guid .. ", '" .. escapedName .. "', " .. displayId .. ", " .. (matchedFamily or 0) .. ", 0)") -- Consider moving db saves to onPlayerSave instead of creature kill
+        CharDBExecute("REPLACE INTO character_morphs (guid, name, id, form, active) VALUES (" .. guid .. ", '" .. escapedName .. "', " .. displayId .. ", " .. (matchedFamily or 0) .. ", 0)") -- Consider moving db saves to onPlayerSave instead of creature kill
         local familyNames = {
             [15] = "Felhunter",
             [16] = "Voidwalker",
