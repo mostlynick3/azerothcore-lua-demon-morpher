@@ -376,7 +376,7 @@ local function OnItemGossipSelect(event, player, object, sender, intid, code)
         local ITEMS_PER_PAGE = 10
         
         CharDBQueryAsync("SELECT name, id FROM character_morphs WHERE guid = "..guid.." AND form = "..formId, function(results)
-            player = GetPlayerByName(playername)
+            local player = GetPlayerByName(playername)
             
             if results then
                 -- Store all results in a table for pagination
