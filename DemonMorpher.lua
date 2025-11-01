@@ -211,6 +211,7 @@ local function OnKillCreature(event, player, creature)
     or displayId == 6173
     or displayId == 1913
     or displayId == 7126
+	or displayId == 19595 -- Invisible imp
     then
         return
     end
